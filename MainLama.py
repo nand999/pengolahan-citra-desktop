@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets,uic
-from PyQt5.QtWidgets import QFileDialog, QGraphicsScene, QHBoxLayout,QSpinBox, QSlider, QDialog, QVBoxLayout, QLabel, QPushButton, QApplication, QGraphicsPixmapItem, QInputDialog
+from PyQt5.QtWidgets import QFileDialog, QGraphicsScene, QSlider, QDialog, QVBoxLayout, QLabel, QPushButton, QApplication, QGraphicsPixmapItem, QInputDialog
+
 from PyQt5.QtGui import QPixmap, QImage, QColor, qRgb
 import matplotlib.pyplot as plt
 import tempfile
@@ -11,7 +12,6 @@ from histogram_rgb import HistogramDialog
 from cropdialog import CropDialog
 from tentang import tentangMain
 from contrast import ContrastDialog
-from menuSegmentasi import MenuSegmentasi as ms
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -52,8 +52,8 @@ class Ui_MainWindow(object):
         self.menuHistogram_Equalization.setObjectName("menuHistogram_Equalization")
         self.menuHistogram_Equalization.triggered.connect(self.histogram_equalization)
 
-        # self.menuAritmetical_Operation = QtWidgets.QMenu(self.menubar)
-        # self.menuAritmetical_Operation.setObjectName("menuAritmetical_Operation")
+        self.menuAritmetical_Operation = QtWidgets.QMenu(self.menubar)
+        self.menuAritmetical_Operation.setObjectName("menuAritmetical_Operation")
 
         self.menuFilter = QtWidgets.QMenu(self.menubar)
         self.menuFilter.setObjectName("menuFilter")
@@ -178,6 +178,7 @@ class Ui_MainWindow(object):
         self.actionLuminance.triggered.connect(self.linear_luminance)
 
 
+
         #action brihtness
         self.menuBrightness = QtWidgets.QMenu(self.menuColors)
         self.menuBrightness.setObjectName("menuBrightness")
@@ -223,38 +224,31 @@ class Ui_MainWindow(object):
         self.actionHistogram_Equalization.setObjectName("actionHistogram_Equalization")
         self.actionFuzzy_HE_RGB = QtWidgets.QAction(MainWindow)
         self.actionFuzzy_HE_RGB.setObjectName("actionFuzzy_HE_RGB")
-        self.actionFuzzy_HE_RGB.triggered.connect(self.fhe_rgb)
+        self.actionFuzzy_HE_RGB.triggered.connect(self.fuzzy_rgb)
         self.actionFuzzy_Grayscale = QtWidgets.QAction(MainWindow)
         self.actionFuzzy_Grayscale.setObjectName("actionFuzzy_Grayscale")
-        self.actionFuzzy_Grayscale.triggered.connect(self.fhe_grayscale)
+        self.actionFuzzy_Grayscale.triggered.connect(self.fuzzy_grayscale)
 
         self.actionIdentity = QtWidgets.QAction(MainWindow)
         self.actionIdentity.setObjectName("actionIdentity")
-        self.actionIdentity.triggered.connect(self.identity_filter)
 
         self.actionSharpen = QtWidgets.QAction(MainWindow)
         self.actionSharpen.setObjectName("actionSharpen")
-        self.actionSharpen.triggered.connect(self.sharpen_filter)
 
         self.actionUnsharp_Masking = QtWidgets.QAction(MainWindow)
         self.actionUnsharp_Masking.setObjectName("actionUnsharp_Masking")
-        self.actionUnsharp_Masking.triggered.connect(self.unsharp_masking)
 
         self.actionAverage_Filter = QtWidgets.QAction(MainWindow)
         self.actionAverage_Filter.setObjectName("actionAverage_Filter")
-        self.actionAverage.triggered.connect(self.average_filter)
 
         self.actionLow_Pass_Filter = QtWidgets.QAction(MainWindow)
         self.actionLow_Pass_Filter.setObjectName("actionLow_Pass_Filter")
-        self.actionLow_Pass_Filter.triggered.connect(self.low_pass_filter)
 
         self.actionHight_Pass_Filter = QtWidgets.QAction(MainWindow)
         self.actionHight_Pass_Filter.setObjectName("actionHight_Pass_Filter")
-        self.actionHight_Pass_Filter.triggered.connect(self.high_pass_filter)
 
         self.actionBandstop_Filter = QtWidgets.QAction(MainWindow)
         self.actionBandstop_Filter.setObjectName("actionBandstop_Filter")
-        self.actionBandstop_Filter.triggered.connect(self.bandstop_filter)
 
         self.actionEdge_Detection_1 = QtWidgets.QAction(MainWindow)
         self.actionEdge_Detection_1.setObjectName("actionEdge_Detection_1")
@@ -267,21 +261,14 @@ class Ui_MainWindow(object):
 
         self.actionGaussian_Blur_3x3 = QtWidgets.QAction(MainWindow)
         self.actionGaussian_Blur_3x3.setObjectName("actionGaussian_Blur_3x3")
-        self.actionGaussian_Blur_3x3.triggered.connect(self.gaussian_blur_3x3)
 
         self.actionGaussian_Blur_3x5 = QtWidgets.QAction(MainWindow)
         self.actionGaussian_Blur_3x5.setObjectName("actionGaussian_Blur_3x5")
-        self.actionGaussian_Blur_3x5.triggered.connect(self.gaussian_blur_3x5)
 
         #Edge detection
         self.actionPrewitt = QtWidgets.QAction(MainWindow)
         self.actionPrewitt.setObjectName("actionPrewitt")
         self.actionPrewitt.triggered.connect(self.prewitt_edge_detection)
-
-        self.actionCanny = QtWidgets.QAction(MainWindow)
-        self.actionCanny.setObjectName("actionCanny")
-        self.actionCanny.triggered.connect(self.canny_edge_detection)
-
         self.actionSebel = QtWidgets.QAction(MainWindow)
         self.actionSebel.setObjectName("actionSebel")
         self.actionSebel.triggered.connect(self.sobel_edge_detection)
@@ -323,8 +310,7 @@ class Ui_MainWindow(object):
         self.actionCross_4 = QtWidgets.QAction(MainWindow)
         self.actionCross_4.setObjectName("actionCross_4")
         self.actionCross_4.triggered.connect(lambda: self.erosion('cross', 4))
-
-         #dilation
+        #dilation
         self.actionSquare_7 = QtWidgets.QAction(MainWindow)
         self.actionSquare_7.setObjectName("actionSquare_7")
         self.actionSquare_7.triggered.connect(lambda: self.dilation('square', 7))
@@ -334,7 +320,7 @@ class Ui_MainWindow(object):
         self.actionCross_5 = QtWidgets.QAction(MainWindow)
         self.actionCross_5.setObjectName("actionCross_5")
         self.actionCross_5.triggered.connect(lambda: self.dilation('cross', 5))
-         #opening
+        #opening
         self.actionSquare_9 = QtWidgets.QAction(MainWindow)
         self.actionSquare_9.setObjectName("actionSquare_9")
         self.actionSquare_9.triggered.connect(lambda: self.opening('square', 9))
@@ -342,36 +328,13 @@ class Ui_MainWindow(object):
         self.actionSquare_10 = QtWidgets.QAction(MainWindow)
         self.actionSquare_10.setObjectName("actionSquare_10")
         self.actionSquare_10.triggered.connect(lambda: self.closing('square', 10))
+
         self.actionTes2 = QtWidgets.QAction(MainWindow)
         self.actionTes2.setObjectName("actionTes2")
 
-        #segmentasi
-        self.menuSegmentasi = QtWidgets.QMenu(self.menubar)
-        self.menuSegmentasi.setObjectName("menuSegmentasi")
-        #region
-        self.actionRegion_Growing = QtWidgets.QAction(MainWindow)
-        self.actionRegion_Growing.setObjectName("actionRegion_Growing")
-        self.actionRegion_Growing.triggered.connect(self.show_dialog_regiongrow)
-        #kmeans
-        self.actionKmeans_Clustering = QtWidgets.QAction(MainWindow)
-        self.actionKmeans_Clustering.setObjectName("actionKmeans_Clustering")
-        self.actionKmeans_Clustering.triggered.connect(self.show_segment_cluster)
-        #watershed
-        self.actionWatershed_Segmentation = QtWidgets.QAction(MainWindow)
-        self.actionWatershed_Segmentation.setObjectName("actionWatershed_Segmentation")
-        self.actionWatershed_Segmentation.triggered.connect(self.segment_watershed)
-        #global
-        self.actionGlobal_Thresholding = QtWidgets.QAction(MainWindow)
-        self.actionGlobal_Thresholding.setObjectName("actionGlobal_Thresholding")
-        self.actionGlobal_Thresholding.triggered.connect(self.show_segment_globalthreshold)
-        #adaptive_thresh_mean
-        self.actionAdaptive_Thresh_Mean = QtWidgets.QAction(MainWindow)
-        self.actionAdaptive_Thresh_Mean.setObjectName("actionAdaptive_Thresh_Mean")
-        self.actionAdaptive_Thresh_Mean.triggered.connect(self.segment_adaptive_thresh_mean)
-        #adaptive_thresh_gaussian
-        self.actionAdaptive_Thresh_Gaussian = QtWidgets.QAction(MainWindow)
-        self.actionAdaptive_Thresh_Gaussian.setObjectName("actionAdaptive_Thresh_Gaussian")
-        self.actionAdaptive_Thresh_Gaussian.triggered.connect(self.segment_adaptive_thresh_gaussian)
+        #menu morfologi
+        # self.
+
     
         #todo menu / pembuatan menu
         self.menuFile.addAction(self.actionOpenFile)
@@ -426,7 +389,6 @@ class Ui_MainWindow(object):
         self.menuFilter.addAction(self.actionHight_Pass_Filter)
         self.menuFilter.addAction(self.actionBandstop_Filter)
         self.menuEdge_Detection_2.addAction(self.actionPrewitt)
-        self.menuEdge_Detection_2.addAction(self.actionCanny)
         self.menuEdge_Detection_2.addAction(self.actionSebel)
         self.menuErosion.addAction(self.actionSquare_4)
         self.menuErosion.addAction(self.actionSquare_6)
@@ -436,16 +398,18 @@ class Ui_MainWindow(object):
         self.menuDilation.addAction(self.actionCross_5)
         self.menuOpening.addAction(self.actionSquare_9)
         self.menuClosing.addAction(self.actionSquare_10)
+
         self.menuMorfologi.addAction(self.menuErosion.menuAction())
         self.menuMorfologi.addAction(self.menuDilation.menuAction())
         self.menuMorfologi.addAction(self.menuOpening.menuAction())
         self.menuMorfologi.addAction(self.menuClosing.menuAction())
+
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuINput.menuAction())
         self.menubar.addAction(self.menuColors.menuAction())
         self.menubar.addAction(self.menuTentang.menuAction())
         self.menubar.addAction(self.menuHistogram_Equalization.menuAction())
-        # self.menubar.addAction(self.menuAritmetical_Operation.menuAction())
+        self.menubar.addAction(self.menuAritmetical_Operation.menuAction())
         self.menubar.addAction(self.menuFilter.menuAction())
         self.menubar.addAction(self.menuEdge_Detection_2.menuAction())
         self.menubar.addAction(self.menuMorfologi.menuAction())
@@ -458,13 +422,6 @@ class Ui_MainWindow(object):
         self.menuGeometri.addAction(self.actionCropping)
         self.menuGeometri.addAction(self.actionTranslasi)
         self.menuGeometri.addAction(self.actionRotasi)
-        self.menubar.addAction(self.menuSegmentasi.menuAction())
-        self.menuSegmentasi.addAction(self.actionRegion_Growing)
-        self.menuSegmentasi.addAction(self.actionKmeans_Clustering)
-        self.menuSegmentasi.addAction(self.actionWatershed_Segmentation)
-        self.menuSegmentasi.addAction(self.actionGlobal_Thresholding)
-        self.menuSegmentasi.addAction(self.actionAdaptive_Thresh_Mean)
-        self.menuSegmentasi.addAction(self.actionAdaptive_Thresh_Gaussian)
         self.menubar.addAction(self.menuClear.menuAction())
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -483,7 +440,7 @@ class Ui_MainWindow(object):
         self.menuBit_Depth.setTitle(_translate("MainWindow", "Bit Depth"))
         self.menuTentang.setTitle(_translate("MainWindow", "Tentang"))
         self.menuHistogram_Equalization.setTitle(_translate("MainWindow", "Image Processing"))
-        # self.menuAritmetical_Operation.setTitle(_translate("MainWindow", "Aritmetical Operation"))
+        self.menuAritmetical_Operation.setTitle(_translate("MainWindow", "Aritmetical Operation"))
         self.menuFilter.setTitle(_translate("MainWindow", "Filter"))
         self.menuEdge_Detection.setTitle(_translate("MainWindow", "Edge Detection"))
         self.menuGaussian_Blur.setTitle(_translate("MainWindow", "Gaussian Blur"))
@@ -548,23 +505,16 @@ class Ui_MainWindow(object):
         self.actionGaussian_Blur_3x3.setText(_translate("MainWindow", "Gaussian Blur 3x3"))
         self.actionGaussian_Blur_3x5.setText(_translate("MainWindow", "Gaussian Blur 3x5"))
         self.actionPrewitt.setText(_translate("MainWindow", "Prewitt"))
-        self.actionCanny.setText(_translate("MainWindow", "Canny"))
         self.actionSebel.setText(_translate("MainWindow", "Sobel"))
-        self.actionSquare_4.setText(_translate("MainWindow", "Square 3"))
-        self.actionSquare_6.setText(_translate("MainWindow", "Square 5"))
-        self.actionCross_4.setText(_translate("MainWindow", "Cross 3"))
-        self.actionSquare_7.setText(_translate("MainWindow", "Square 3"))
-        self.actionSquare_8.setText(_translate("MainWindow", "Square 5"))
-        self.actionCross_5.setText(_translate("MainWindow", "Cross 3"))
+
+        self.actionSquare_4.setText(_translate("MainWindow", "Square 4"))
+        self.actionSquare_6.setText(_translate("MainWindow", "Square 6"))
+        self.actionCross_4.setText(_translate("MainWindow", "Cross 4"))
+        self.actionSquare_7.setText(_translate("MainWindow", "Square 7"))
+        self.actionSquare_8.setText(_translate("MainWindow", "Square 8"))
+        self.actionCross_5.setText(_translate("MainWindow", "Cross 5"))
         self.actionSquare_9.setText(_translate("MainWindow", "Square 9"))
-        self.actionSquare_10.setText(_translate("MainWindow", "Square 9"))
-        self.menuSegmentasi.setTitle(_translate("MainWindow", "Segmentasi"))
-        self.actionRegion_Growing.setText(_translate("Main Window", "Region Growing"))
-        self.actionKmeans_Clustering.setText(_translate("Main Window", "Kmeans Clustering"))
-        self.actionWatershed_Segmentation.setText(_translate("Main Window", "Watershed Segmentation"))
-        self.actionGlobal_Thresholding.setText(_translate("Main Window", "Global Thresholding"))
-        self.actionAdaptive_Thresh_Mean.setText(_translate("Main Window", "Adaptive Thresh Mean"))
-        self.actionAdaptive_Thresh_Gaussian.setText(_translate("Main Window", "Adaptive Thresh Gaussian"))
+        self.actionSquare_10.setText(_translate("MainWindow", "Square 10"))
         self.actionTes2.setText(_translate("MainWindow", "tes2"))
 
 
@@ -579,7 +529,7 @@ class Ui_MainWindow(object):
         self.histogram_output_dialog = None
         self.contrast_dialog = None
 
-
+   
     def calculate_cumulative_histogram(self, histogram):
         # Menghitung cumulative histogram
         return np.cumsum(histogram)
@@ -976,43 +926,6 @@ class Ui_MainWindow(object):
         # Hapus file sementara
         os.remove(temp_file_path)
 
-    def canny_edge_detection(self):
-        # Konversi gambar ke grayscale
-        image = self.imagefile.convert("L")  # Pastikan gambar dalam mode grayscale
-        
-        # Konversi gambar ke array NumPy
-        image_np = np.array(image)
-        
-        # Aplikasi filter Canny
-        edges = cv2.Canny(image_np, 100, 200)  # Canny Edge Detection dengan threshold 100 dan 200
-        
-        # Konversi array hasil ke gambar
-        image_out = Image.fromarray(edges)
-        self.imageResult = image_out
-        
-        # Simpan gambar ke temporary file
-        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as temp_file:
-            temp_file_path = temp_file.name
-            image_out.save(temp_file_path)
-
-        # Load gambar dari file sementara ke QPixmap
-        img_pixmap = QtGui.QPixmap(temp_file_path)
-
-        # Mendapatkan ukuran QGraphicsView
-        view_width = self.graphicsView_2.width()
-        view_height = self.graphicsView_2.height()
-
-        # Mengatur pixmap untuk skala agar sesuai dengan ukuran QGraphicsView dengan tetap menjaga rasio
-        scaled_pixmap = img_pixmap.scaled(view_width, view_height, QtCore.Qt.KeepAspectRatio)
-
-        self.sceneOutput.clear()  # Bersihkan konten sebelumnya di scene
-        self.sceneOutput.addPixmap(scaled_pixmap)
-        self.graphicsView_2.setSceneRect(self.sceneOutput.itemsBoundingRect())
-
-        # Hapus file sementara
-        os.remove(temp_file_path)
-
-
     def sobel_edge_detection(self):
         # Konversi gambar ke grayscale
         image = self.imagefile.convert("L")  # Pastikan gambar dalam mode grayscale
@@ -1057,15 +970,8 @@ class Ui_MainWindow(object):
         os.remove(temp_file_path)
 
     def clear_scene(self):
-    # Membuat QMessageBox untuk konfirmasi
-        reply = QtWidgets.QMessageBox.question(
-            None, 'Konfirmasi', "Apakah Anda yakin ingin menghapus scene?", 
-            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.No
-        )
-        # Jika pengguna memilih Yes, eksekusi clear_scene
-        if reply == QtWidgets.QMessageBox.Yes:
-            self.scene.clear()
-            self.sceneOutput.clear()
+        self.scene.clear()
+        self.sceneOutput.clear()
 
     def show_tentang_dialog(self):
         # Create a new dialog and load the 'Tentang.ui' file
@@ -1168,6 +1074,8 @@ class Ui_MainWindow(object):
         else:
             QtWidgets.QMessageBox.warning(
                 None, "Error", "Gambar belum dimuat.")
+
+    
 
     def negative_inverse(self):
         # Pastikan gambar sudah dimuat
@@ -1401,144 +1309,152 @@ class Ui_MainWindow(object):
         # delete temp file
         os.remove(temp_file_path)
 
-    def fhe_grayscale(self):
-        def fuzzy_membership_function(x, mean, stddev):
-            epsilon = 1e-5 # Menambah epsilon agar tdk ada pembagian dengan nol
-            return np.exp(-((x - mean) ** 2) / (2 * (stddev ** 2 + epsilon)))
+    def fuzzy_grayscale(self):
+        alpha = 1
+        image = self.imagefile  # Pastikan ini adalah objek PIL.Image
+        image_np = np.array(image.convert('RGB'))  # Konversi ke format RGB
 
-        def fuzzy_histogram_equalization_grayscale(image, block_size=16):
-            # konversi gambar ke grayscale
-            if len(image.shape) == 3:
-                image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        # Mendapatkan ukuran gambar
+        height, width, _ = image_np.shape
 
-            height, widht = image.shape #dapatkan dimensi gambar
+        # Inisialisasi histogram untuk gambar grayscale
+        grayscale_histogram = [0] * 256
 
-            equalized_image = np.zeros_like(image, dtype=np.uint8) # Buat gambar yang telah di equalize
+        # Hitung histogram untuk gambar grayscale
+        for y in range(height):
+            for x in range(width):
+                r, g, b = image_np[y, x]
+                grayscale_value = int(0.299 * r + 0.587 * g + 0.114 * b)
+                grayscale_histogram[grayscale_value] += 1
 
-            # ukuran blok
-            block_height = block_size
-            block_widht = block_size
+        # Hitung cumulative histogram untuk gambar grayscale
+        cumulative_histogram = np.cumsum(grayscale_histogram)
+        equalized_histogram = [0] * 256
 
-            for y in range(0, height, block_height):
-                for x in range(0, widht, block_widht):
-                    # definisi batas blok
-                    block = image[y:y+block_height, x:x+block_widht]
-                    if block.size == 0:
-                        continue
+        # Terapkan fuzzy histogram equalization pada gambar grayscale
+        for y in range(height):
+            for x in range(width):
+                r, g, b = image_np[y, x]
+                grayscale_value = int(0.299 * r + 0.587 * g + 0.114 * b)
+                fuzzy_grayscale = int(alpha * cumulative_histogram[grayscale_value] + (1 - alpha) * grayscale_value)
+                # Pastikan nilai fuzzy_grayscale berada dalam rentang 0-255
+                fuzzy_grayscale = min(max(fuzzy_grayscale, 0), 255)
+                image_np[y, x] = [fuzzy_grayscale, fuzzy_grayscale, fuzzy_grayscale]
 
-                    # hitung histogram lokal
-                    hist, bins = np.histogram(block.flatten(), bins=256, range=[0, 256])
-                    cdf = hist.cumsum()
-                    cdf_normalized = cdf * 256 / cdf[-1]
-                    equalized_block = np.interp(block.flatten(), bins[:-1], cdf_normalized).reshape(block.shape)
+                equalized_histogram[fuzzy_grayscale] += 1
 
-                    # hitung keanggotaan fuzzy
-                    mean = np.mean(equalized_block)
-                    stddev = np.std(equalized_block)
-                    membership = fuzzy_membership_function(equalized_block, mean, stddev)
-
-                    # Terapkan penyesuaian kontras fuzzy
-                    equalized_image[y:y+block_height, x:x+block_widht] = np.clip(equalized_block * membership, 0, 255).astype(np.uint8)
-
-            return equalized_image
-
-        image = cv2.imread(self.imagePath) 
-
-        fheg_image = fuzzy_histogram_equalization_grayscale(image) # Terapkan fhe
-
-        output_image = Image.fromarray(fheg_image)
-        self.imageResult = output_image
-
-        # Save image ke temporary file
+        # Simpan gambar hasil ke file sementara
         with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as temp_file:
             temp_file_path = temp_file.name
-            output_image.save(temp_file_path)
-        
-        # Load image dari temp file ke QPixmap
-        img_pixmap = QtGui.QPixmap(temp_file_path)
+            image_out = Image.fromarray(image_np.astype(np.uint8))
+            image_out.save(temp_file_path)
 
-        # Get ukuran QGraphicsView
+        # Muat gambar dari file sementara ke QPixmap
+        img_pixmap = QPixmap(temp_file_path)
+
+        # Mendapatkan ukuran QGraphicsView
         view_width = self.graphicsView_2.width()
         view_height = self.graphicsView_2.height()
 
-        # scale pixmap ke QGraphicView
+        # Skala pixmap agar sesuai dengan QGraphicsView, menjaga aspek rasio
         scaled_pixmap = img_pixmap.scaled(view_width, view_height, QtCore.Qt.KeepAspectRatio)
 
-        self.sceneOutput.clear() #clear gambar yang ada di QGraphicview_2
+        # Bersihkan konten sebelumnya dan tambahkan pixmap baru ke scene
+        self.sceneOutput.clear()
         self.sceneOutput.addPixmap(scaled_pixmap)
         self.graphicsView_2.setSceneRect(self.sceneOutput.itemsBoundingRect())
 
+        # Hapus file sementara
         os.remove(temp_file_path)
+
+        # Tampilkan histogram sebelum dan sesudah equalisasi
+        # plt.figure(figsize=(12, 5))
+        # plt.subplot(1, 2, 1)
+        # plt.bar(range(256), grayscale_histogram, color='b', alpha=0.6, label='Before Equalization')
+        # plt.xlabel('Pixel Value')
+        # plt.ylabel('Frequency')
+        # plt.legend()
+
+        # plt.subplot(1, 2, 2)
+        # plt.bar(range(256), equalized_histogram, color='r', alpha=0.6, label='After Equalization')
+        # plt.xlabel('Pixel Value')
+        # plt.ylabel('Frequency')
+        # plt.legend()
+
+        # plt.tight_layout()
+        # plt.show()
     
-    def fhe_rgb(self):
-        def fuzzy_membership_function(x, men, stddev):
-            epsilon = 1e-5
-            return np.exp(-((x - men) ** 2) / (2 * (stddev ** 2 + epsilon)))
+    def fuzzy_rgb(self):
+       
+        alpha = 1  # Mengatur alpha menjadi 1
+        image = self.imagefile  # Pastikan ini adalah objek PIL.Image
+        image_np = np.array(image.convert('RGB'))  # Konversi ke format RGB
 
-        def fuzzy_histogram_equalization_rgb(image, block_size=16):
-            height, widht, channels = image.shape
+        # Mendapatkan ukuran gambar
+        height, width, _ = image_np.shape
 
-            equalized_image = np.zeros_like(image, dtype=np.uint8)
+        # Inisialisasi histogram untuk setiap saluran
+        red_histogram = [0] * 256
+        green_histogram = [0] * 256
+        blue_histogram = [0] * 256
 
-            for channel in range(channels):
-                channel_data = image[:, :, channel]
-                equalized_channel = np.zeros_like(channel_data, dtype=np.uint8)
+        # Hitung histogram untuk setiap saluran
+        for y in range(height):
+            for x in range(width):
+                r, g, b = image_np[y, x]
+                red_histogram[r] += 1
+                green_histogram[g] += 1
+                blue_histogram[b] += 1
 
-                block_height = block_size
-                block_widht = block_size
+        # # Hitung cumulative histogram untuk setiap saluran
+        # red_cumulative_histogram = self.calculate_cumulative_histogram(red_histogram)
+        # green_cumulative_histogram = self.calculate_cumulative_histogram(green_histogram)
+        # blue_cumulative_histogram = self.calculate_cumulative_histogram(blue_histogram)
 
-                for y in range(0, height, block_height):
-                    for x in range(0, widht, block_widht):
-                        block = channel_data[y:y+block_height, x:x+block_widht]
-                        if block.size == 0:
-                            continue
-                        
-                        # hitung histogram lokal
-                        hist, bins = np.histogram(block.flatten(), bins=256, range=[0,256])
-                        cdf = hist.cumsum()
-                        cdf_normalized = cdf * 255 / cdf[-1]
-                        equalized_block = np.interp(block.flatten(), bins[:-1], cdf_normalized).reshape(block.shape)
+        # Terapkan fuzzy histogram equalization pada setiap saluran
+        # for y in range(height):
+        #     for x in range(width):
+        #         r, g, b = image_np[y, x]
+                # fuzzy_r = int(alpha * red_cumulative_histogram[r] + (1 - alpha) * r)
+                # fuzzy_g = int(alpha * green_cumulative_histogram[g] + (1 - alpha) * g)
+                # fuzzy_b = int(alpha * blue_cumulative_histogram[b] + (1 - alpha) * b)
+                # Pastikan nilai fuzzy_r, fuzzy_g, fuzzy_b berada dalam rentang 0-255
+                # fuzzy_r = min(max(fuzzy_r, 0), 255)
+                # fuzzy_g = min(max(fuzzy_g, 0), 255)
+                # fuzzy_b = min(max(fuzzy_b, 0), 255)
+                # image_np[y, x] = [fuzzy_r, fuzzy_g, fuzzy_b]
 
-                        # hitung kranggotaan fuzzy
-                        mean = np.mean(equalized_block)
-                        stddev = np.std(equalized_block)
-                        membership = fuzzy_membership_function(equalized_block, mean, stddev)
-
-                        # terapkan penyesuaian kontras fuzzy
-                        equalized_channel[y:y+block_height, x:x+block_widht] = np.clip(equalized_block * membership, 0, 255).astype(np.uint8)
-
-                equalized_image[:, :, channel] = equalized_channel
-            
-            return equalized_image
-
-        image = cv2.imread(self.imagePath) 
-
-        fhe_image_rgb = fuzzy_histogram_equalization_rgb(image) # Terapkan fhe
-
-        output_image = Image.fromarray(fhe_image_rgb)
-        self.imageResult = output_image
-
-        # Save image ke temporary file
+        # Simpan gambar hasil ke file sementara
         with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as temp_file:
             temp_file_path = temp_file.name
-            output_image.save(temp_file_path)
-        
-        # Load image dari temp file ke QPixmap
-        img_pixmap = QtGui.QPixmap(temp_file_path)
+            image_out = Image.fromarray(image_np.astype(np.uint8))
+            image_out.save(temp_file_path)
 
-        # Get ukuran QGraphicsView
+        # Muat gambar dari file sementara ke QPixmap
+        img_pixmap = QPixmap(temp_file_path)
+
+        # Mendapatkan ukuran QGraphicsView
         view_width = self.graphicsView_2.width()
         view_height = self.graphicsView_2.height()
 
-        # scale pixmap ke QGraphicView
+        # Skala pixmap agar sesuai dengan QGraphicsView, menjaga aspek rasio
         scaled_pixmap = img_pixmap.scaled(view_width, view_height, QtCore.Qt.KeepAspectRatio)
 
-        self.sceneOutput.clear() #clear gambar yang ada di QGraphicview_2
+        # Bersihkan konten sebelumnya dan tambahkan pixmap baru ke scene
+        self.sceneOutput.clear()
         self.sceneOutput.addPixmap(scaled_pixmap)
         self.graphicsView_2.setSceneRect(self.sceneOutput.itemsBoundingRect())
 
+        # Hapus file sementara
         os.remove(temp_file_path)
 
+        # Tampilkan histogram sebelum dan sesudah equalisasi
+        # self.plot_histogram(red_histogram, green_histogram, blue_histogram, "Before Equalization")
+        # self.plot_histogram(
+        #     red_cumulative_histogram, green_cumulative_histogram, blue_cumulative_histogram, "After Equalization"
+        # )
+
+        # Tampilkan histogram sebelum dan sesudah equalisasi
        
     #start menu geometri   
     def rotasi(self):
@@ -1889,6 +1805,7 @@ class Ui_MainWindow(object):
                 QtWidgets.QMessageBox.warning(None, "Error", "Masukkan nilai tx yang valid.")
         else:
             QtWidgets.QMessageBox.warning(None, "Error", "Gambar belum dimuat.")
+
 
     def crop_image(self, rect):
         # Ensure an image is loaded
@@ -2371,8 +2288,8 @@ class Ui_MainWindow(object):
         # delete temp file
         os.remove(temp_file_path)
 
-
-    # morfologi
+    # end rgb function
+    
     def erosion(self, kernel_shape='square', kernel_size=4):
         # Konversi gambar ke grayscale
         image = self.imagefile.convert("L")
@@ -2479,361 +2396,10 @@ class Ui_MainWindow(object):
 
         # Hapus file sementara
         os.remove(temp_file_path)
-    
-    def display_result(self, result):
-        # Konversi array hasil ke gambar
-        image_out = Image.fromarray(result.astype(np.uint8))
-        self.imageResult = image_out
-        
-        # Simpan gambar ke temporary file
-        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as temp_file:
-            temp_file_path = temp_file.name
-            image_out.save(temp_file_path)
 
-        # Load gambar dari file sementara ke QPixmap
-        img_pixmap = QtGui.QPixmap(temp_file_path)
 
-        # Mendapatkan ukuran QGraphicsView
-        view_width = self.graphicsView_2.width()
-        view_height = self.graphicsView_2.height()
-
-        # Mengatur pixmap untuk skala agar sesuai dengan ukuran QGraphicsView dengan tetap menjaga rasio
-        scaled_pixmap = img_pixmap.scaled(view_width, view_height, QtCore.Qt.KeepAspectRatio)
-
-        self.sceneOutput.clear()  # Bersihkan konten sebelumnya di scene
-        self.sceneOutput.addPixmap(scaled_pixmap)
-        self.graphicsView_2.setSceneRect(self.sceneOutput.itemsBoundingRect())
-
-        # Hapus file sementara
-        os.remove(temp_file_path)
 
    
-    #segmentasi
-    def show_dialog_regiongrow(self):
-        dialog = QDialog(self.centralwidget)  # Set parent widget (usually centralwidget in a QMainWindow)
-        dialog.setWindowTitle("Input Region Grow Configuration")
-
-        layout = QVBoxLayout()
-
-        h_layout = QHBoxLayout()
-
-        # Label dan input untuk nilai pertama
-        h_layout.addWidget(QLabel("Masukkan nilai seed x"))
-        seedvalx = QSpinBox()
-        seedvalx.setRange(0, 255)
-        h_layout.addWidget(seedvalx)
-
-        # Label dan input untuk nilai kedua
-        h_layout.addWidget(QLabel("Masukkan nilai seed y"))
-        seedvaly = QSpinBox()
-        seedvaly.setRange(0, 255)
-        h_layout.addWidget(seedvaly)
-
-        layout.addLayout(h_layout)
-
-        # treshold value
-        layout.addWidget(QLabel("Masukkan nilai Threshold"))
-        spin_box_threshold = QSpinBox()
-        spin_box_threshold.setRange(0, 255)  # Range contoh untuk threshold
-        layout.addWidget(spin_box_threshold)
-
-        # Tombol Ok
-        ok_button = QPushButton("Ok")
-        ok_button.clicked.connect(lambda: self.applyregiongrow(seedvalx.value(), seedvaly.value(), spin_box_threshold.value(), dialog))
-        layout.addWidget(ok_button)
-
-        # Set layout dan jalankan dialog
-        dialog.setLayout(layout)
-        dialog.exec_()
-
-    def applyregiongrow(self, seed_x, seed_y, treshold, dialog):
-        self.segment_region_grow((seed_x, seed_y), treshold)
-        dialog.accept()
-        
-    def segment_region_grow(self, seed, threshold_value):
-        image_path = self.imagePath
-        output = ms.region_growing(image_path, seed, threshold_value)
-
-        self.imageResult = output
-
-        # Save the image to a temporary file
-        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as temp_file:
-            temp_file_path = temp_file.name
-            output.save(temp_file_path)
-
-        # Load the image from the temporary file into QPixmap
-        img_pixmap = QtGui.QPixmap(temp_file_path)
-
-        # Get the size of the QGraphicsView
-        view_width = self.graphicsView_2.width()
-        view_height = self.graphicsView_2.height()
-
-        # Scale the pixmap to fit the QGraphicsView, preserving the aspect ratio
-        scaled_pixmap = img_pixmap.scaled(view_width, view_height, QtCore.Qt.KeepAspectRatio)
-
-        self.sceneOutput.clear()  # Clear any previous content in the scene
-        self.sceneOutput.addPixmap(scaled_pixmap)
-        # self.graphicsView.fitInView(self.scene.itemsBoundingRect(), QtCore.Qt.KeepAspectRatio)
-        self.graphicsView_2.setSceneRect(self.sceneOutput.itemsBoundingRect())
-        
-        # delete temp file
-        os.remove(temp_file_path)
-
-    def show_segment_cluster(self):
-        k, ok = QInputDialog.getInt(MainWindow, "Kmeans Cluster Configuration", "Masukkan nilai k:", 2)
-        if ok:
-            self.segment_kmeans_clustering(k)
-
-    def segment_kmeans_clustering(self, k):
-        pathimg = self.imagePath
-        output = ms.kmeans_clustering(pathimg, k)
-
-        self.imageResult = output
-
-        # Save the image to a temporary file
-        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as temp_file:
-            temp_file_path = temp_file.name
-            output.save(temp_file_path)
-
-        # Load the image from the temporary file into QPixmap
-        img_pixmap = QtGui.QPixmap(temp_file_path)
-
-        # Get the size of the QGraphicsView
-        view_width = self.graphicsView_2.width()
-        view_height = self.graphicsView_2.height()
-
-        # Scale the pixmap to fit the QGraphicsView, preserving the aspect ratio
-        scaled_pixmap = img_pixmap.scaled(view_width, view_height, QtCore.Qt.KeepAspectRatio)
-
-        self.sceneOutput.clear()  # Clear any previous content in the scene
-        self.sceneOutput.addPixmap(scaled_pixmap)
-        # self.graphicsView.fitInView(self.scene.itemsBoundingRect(), QtCore.Qt.KeepAspectRatio)
-        self.graphicsView_2.setSceneRect(self.sceneOutput.itemsBoundingRect())
-        
-        # delete temp file
-        os.remove(temp_file_path)
-
-    def segment_watershed(self):
-        pathimg = self.imagePath
-        output = ms.watershed_segmentation(pathimg)
-
-        self.imageResult = output
-
-        # Save the image to a temporary file
-        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as temp_file:
-            temp_file_path = temp_file.name
-            output.save(temp_file_path)
-
-        # Load the image from the temporary file into QPixmap
-        img_pixmap = QtGui.QPixmap(temp_file_path)
-
-        # Get the size of the QGraphicsView
-        view_width = self.graphicsView_2.width()
-        view_height = self.graphicsView_2.height()
-
-        # Scale the pixmap to fit the QGraphicsView, preserving the aspect ratio
-        scaled_pixmap = img_pixmap.scaled(view_width, view_height, QtCore.Qt.KeepAspectRatio)
-
-        self.sceneOutput.clear()  # Clear any previous content in the scene
-        self.sceneOutput.addPixmap(scaled_pixmap)
-        # self.graphicsView.fitInView(self.scene.itemsBoundingRect(), QtCore.Qt.KeepAspectRatio)
-        self.graphicsView_2.setSceneRect(self.sceneOutput.itemsBoundingRect())
-        
-        # delete temp file
-        os.remove(temp_file_path)
-
-    def show_segment_globalthreshold(self):
-        valtr, ok = QInputDialog.getInt(MainWindow, "Global Thresholding Configuration", "Masukkan Threshold Value:", 100)
-        if ok:
-            self.segment_Global_Thresholding(valtr)
-
-    def segment_Global_Thresholding(self, valtrh):
-        pathimg = self.imagePath
-        output = ms.global_thresholding(pathimg, valtrh)
-
-        self.imageResult = output
-
-        # Save the image to a temporary file
-        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as temp_file:
-            temp_file_path = temp_file.name
-            output.save(temp_file_path)
-
-        # Load the image from the temporary file into QPixmap
-        img_pixmap = QtGui.QPixmap(temp_file_path)
-
-        # Get the size of the QGraphicsView
-        view_width = self.graphicsView_2.width()
-        view_height = self.graphicsView_2.height()
-
-        # Scale the pixmap to fit the QGraphicsView, preserving the aspect ratio
-        scaled_pixmap = img_pixmap.scaled(view_width, view_height, QtCore.Qt.KeepAspectRatio)
-
-        self.sceneOutput.clear()  # Clear any previous content in the scene
-        self.sceneOutput.addPixmap(scaled_pixmap)
-        # self.graphicsView.fitInView(self.scene.itemsBoundingRect(), QtCore.Qt.KeepAspectRatio)
-        self.graphicsView_2.setSceneRect(self.sceneOutput.itemsBoundingRect())
-        
-        # delete temp file
-        os.remove(temp_file_path)
-
-    def segment_adaptive_thresh_mean(self):
-        pathimg = self.imagePath
-        output = ms.adaptive_thresh_mean(pathimg)
-
-        self.imageResult = output
-
-        # Save the image to a temporary file
-        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as temp_file:
-            temp_file_path = temp_file.name
-            output.save(temp_file_path)
-
-        # Load the image from the temporary file into QPixmap
-        img_pixmap = QtGui.QPixmap(temp_file_path)
-
-        # Get the size of the QGraphicsView
-        view_width = self.graphicsView_2.width()
-        view_height = self.graphicsView_2.height()
-
-        # Scale the pixmap to fit the QGraphicsView, preserving the aspect ratio
-        scaled_pixmap = img_pixmap.scaled(view_width, view_height, QtCore.Qt.KeepAspectRatio)
-
-        self.sceneOutput.clear()  # Clear any previous content in the scene
-        self.sceneOutput.addPixmap(scaled_pixmap)
-        # self.graphicsView.fitInView(self.scene.itemsBoundingRect(), QtCore.Qt.KeepAspectRatio)
-        self.graphicsView_2.setSceneRect(self.sceneOutput.itemsBoundingRect())
-        
-        # delete temp file
-        os.remove(temp_file_path)
-
-    def segment_adaptive_thresh_gaussian(self):
-        pathimg = self.imagePath
-        output = ms.adaptive_thresh_mean(pathimg)
-
-        self.imageResult = output
-
-        # Save the image to a temporary file
-        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as temp_file:
-            temp_file_path = temp_file.name
-            output.save(temp_file_path)
-
-        # Load the image from the temporary file into QPixmap
-        img_pixmap = QtGui.QPixmap(temp_file_path)
-
-        # Get the size of the QGraphicsView
-        view_width = self.graphicsView_2.width()
-        view_height = self.graphicsView_2.height()
-
-        # Scale the pixmap to fit the QGraphicsView, preserving the aspect ratio
-        scaled_pixmap = img_pixmap.scaled(view_width, view_height, QtCore.Qt.KeepAspectRatio)
-
-        self.sceneOutput.clear()  # Clear any previous content in the scene
-        self.sceneOutput.addPixmap(scaled_pixmap)
-        # self.graphicsView.fitInView(self.scene.itemsBoundingRect(), QtCore.Qt.KeepAspectRatio)
-        self.graphicsView_2.setSceneRect(self.sceneOutput.itemsBoundingRect())
-        
-        # delete temp file
-        os.remove(temp_file_path)
-    
-    def identity_filter(self):
-        # Memuat gambar dan mengonversi ke numpy array
-        image = self.imagefile
-        image_np = np.array(image)
-        
-        # Filter Identity (tidak ada perubahan pada gambar)
-        identity_kernel = np.array([[0, 0, 0], [0, 1, 0], [0, 0, 0]])
-        result = cv2.filter2D(image_np, -1, identity_kernel)
-        
-        self.display_result(result)
-
-    def sharpen_filter(self):
-        image = self.imagefile
-        image_np = np.array(image)
-        
-        # Kernel sharpening
-        sharpen_kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
-        result = cv2.filter2D(image_np, -1, sharpen_kernel)
-        
-        self.display_result(result)
-
-    def unsharp_masking(self):
-        image = self.imagefile
-        image_np = np.array(image)
-        
-        # Gaussian blur for unsharp masking
-        blurred = cv2.GaussianBlur(image_np, (9, 9), 10.0)
-        result = cv2.addWeighted(image_np, 1.5, blurred, -0.5, 0)
-        
-        self.display_result(result)
-
-    def average_filter(self):
-        image = self.imagefile
-        image_np = np.array(image)
-        
-        # Menggunakan filter rata-rata
-        result = cv2.blur(image_np, (3, 3))
-        
-        self.display_result(result)
-
-    def low_pass_filter(self):
-        image = self.imagefile
-        image_np = np.array(image)
-        
-        # Menggunakan filter Gaussian untuk low-pass filter
-        result = cv2.GaussianBlur(image_np, (5, 5), 0)
-        
-        self.display_result(result)
-
-    def high_pass_filter(self):
-        image = self.imagefile
-        image_np = np.array(image)
-        
-        # Filter high-pass (deteksi tepi sederhana)
-        kernel = np.array([[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]])
-        result = cv2.filter2D(image_np, -1, kernel)
-        
-        self.display_result(result)
-
-    def bandstop_filter(self):
-        image = self.imagefile.convert("L")
-        image_np = np.array(image)
-        
-        # Konversi ke frekuensi dengan DFT
-        dft = cv2.dft(np.float32(image_np), flags=cv2.DFT_COMPLEX_OUTPUT)
-        dft_shift = np.fft.fftshift(dft)
-        
-        # Membuat mask bandstop (sederhana)
-        rows, cols = image_np.shape
-        crow, ccol = rows // 2, cols // 2
-        mask = np.ones((rows, cols, 2), np.uint8)
-        r = 30  # Radius mask
-        mask[crow-r:crow+r, ccol-r:ccol+r] = 0
-        
-        # Aplikasi mask pada DFT
-        fshift = dft_shift * mask
-        f_ishift = np.fft.ifftshift(fshift)
-        result = cv2.idft(f_ishift)
-        result = cv2.magnitude(result[:, :, 0], result[:, :, 1])
-        
-        self.display_result(result)
-
-    def gaussian_blur_3x3(self):
-        image = self.imagefile
-        image_np = np.array(image)
-        
-        # Gaussian blur dengan kernel 3x3
-        result = cv2.GaussianBlur(image_np, (3, 3), 0)
-        
-        self.display_result(result)
-
-    def gaussian_blur_3x5(self):
-        image = self.imagefile
-        image_np = np.array(image)
-        
-        # Gaussian blur dengan kernel 3x5
-        result = cv2.GaussianBlur(image_np, (3, 5), 0)
-        
-        self.display_result(result)
-
 
 if __name__ == "__main__":
     import sys
